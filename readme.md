@@ -288,18 +288,4 @@ flake8 py0g/
 - **Documentation**: [docs.py0g.dev](https://docs.py0g.dev)
 - **Discord**: [discord.gg/0g](https://discord.gg/0g)
 
-## 📄 **License**
-
-MIT License - see [LICENSE](LICENSE) file for details.
-
----
-
-<div align="center">
-
 **🚀 Ready to build the future of AI-powered smart contracts with Python?**
-
-[Get Started Now](#quick-start) • [Join Our Community](https://discord.gg/0g) • [Read the Docs](https://docs.py0g.dev)
-
-**Made with ❤️ by the 0G Foundation**
-
-</div>

@@ -1,81 +1,126 @@
 """
-nii - A basic Python smart contract
+SEY Token - A basic fungible token in Python
 
-A smart contract for nii
+This contract demonstrates how to implement a simple
+fungible token (similar to ERC-20) for 0G Galileo.
 """
 
-from typing import Dict, Any
+from typing import Dict
 
 
-class nii:
+class SEYToken:
     """
-    A basic smart contract written in Python.
+    A basic token smart contract written in Python.
     
-    This contract demonstrates the fundamental patterns for
-    writing smart contracts in Python for 0G Galileo.
+    Token Name: SEY Token
+    Symbol: SEY
+    Decimals: 18
     """
     
-    def __init__(self, owner: str):
+    def __init__(self, owner: str, initial_supply: int):
         """
-        Initialize the contract.
+        Initialize the token contract.
         
         Args:
-            owner: Address of the contract owner
+            owner: The address of the contract owner
+            initial_supply: The total supply of tokens
         """
+        self.name: str = "SEY Token"
+        self.symbol: str = "SEY"
+        self.decimals: int = 18
+        self.total_supply: int = initial_supply
+        
         self.owner: str = owner
-        self.data: Dict[str, Any] = {}
-        self.counter: int = 0
+        self.balances: Dict[str, int] = {owner: initial_supply}
+        self.allowances: Dict[str, Dict[str, int]] = {}
     
-    def set_data(self, key: str, value: Any) -> bool:
+    def balance_of(self, account: str) -> int:
         """
-        Store data in the contract.
+        Get the balance of an account.
         
         Args:
-            key: The key to store data under
-            value: The value to store
+            account: The address to check
+            
+        Returns:
+            int: Token balance of the account
+        """
+        return self.balances.get(account, 0)
+    
+    def transfer(self, sender: str, recipient: str, amount: int) -> bool:
+        """
+        Transfer tokens from sender to recipient.
+        
+        Args:
+            sender: The address of the sender
+            recipient: The address of the recipient
+            amount: The amount of tokens to transfer
             
         Returns:
             bool: True if successful
         """
-        self.data[key] = value
+        if amount <= 0 or self.balance_of(sender) < amount:
+            return False
+        
+        # Deduct from sender
+        self.balances[sender] -= amount
+        # Add to recipient
+        self.balances[recipient] = self.balance_of(recipient) + amount
         return True
     
-    def get_data(self, key: str) -> Any:
+    def approve(self, owner: str, spender: str, amount: int) -> bool:
         """
-        Retrieve data from the contract.
+        Approve a spender to spend tokens on behalf of the owner.
         
         Args:
-            key: The key to retrieve data for
+            owner: The token owner
+            spender: The address allowed to spend
+            amount: The amount approved
             
         Returns:
-            Any: The stored value or None if not found
+            bool: True if successful
         """
-        return self.data.get(key)
-    
-    def increment_counter(self) -> int:
-        """
-        Increment the counter.
+        if owner not in self.allowances:
+            self.allowances[owner] = {}
         
-        Returns:
-            int: The new counter value
-        """
-        self.counter += 1
-        return self.counter
+        self.allowances[owner][spender] = amount
+        return True
     
-    def get_counter(self) -> int:
+    def allowance(self, owner: str, spender: str) -> int:
         """
-        Get the current counter value.
+        Get the remaining allowance for a spender.
         
+        Args:
+            owner: The token owner
+            spender: The approved spender
+            
         Returns:
-            int: Current counter value
+            int: Remaining allowance
         """
-        return self.counter
+        return self.allowances.get(owner, {}).get(spender, 0)
     
-    def get_owner(self) -> str:
+    def transfer_from(self, spender: str, sender: str, recipient: str, amount: int) -> bool:
         """
-        Get the contract owner.
+        Transfer tokens on behalf of another account.
         
+        Args:
+            spender: The address executing the transfer
+            sender: The address tokens are sent from
+            recipient: The address tokens are sent to
+            amount: The amount of tokens to transfer
+            
         Returns:
-            str: Owner address
+            bool: True if successful
         """
-        return self.owner
+        allowed = self.allowance(sender, spender)
+        
+        if amount <= 0 or self.balance_of(sender) < amount or allowed < amount:
+            return False
+        
+        # Deduct from sender balance
+        self.balances[sender] -= amount
+        # Add to recipient balance
+        self.balances[recipient] = self.balance_of(recipient) + amount
+        # Reduce allowance
+        self.allowances[sender][spender] -= amount
+        
+        return True
