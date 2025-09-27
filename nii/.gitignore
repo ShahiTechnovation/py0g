@@ -1,0 +1,51 @@
+# py0g artifacts (commented out to allow reading verification files)
+# artifacts/
+# *.bin
+# *.abi.json
+# *_hash.json
+# *_proof.json
+# *_deployment.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Private keys (IMPORTANT: Never commit private keys)
+*.key
+*.pem
