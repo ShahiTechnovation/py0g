@@ -64,8 +64,12 @@ class EnhancedContractInteractor:
     def normalize_address(self, address: str) -> str:
         """Normalize address to proper format."""
         # Remove 0x prefix if present
-        if address.startswith('0x'):
+        if address.startswith('0x') or address.startswith('0X'):
             address = address[2:]
+        
+        # If address is longer than 40 characters, take the last 40
+        if len(address) > 40:
+            address = address[-40:]
         
         # Pad with zeros to make it 40 characters
         address = address.zfill(40)
@@ -75,11 +79,11 @@ class EnhancedContractInteractor:
         
         # Validate length
         if len(address) != 42:
-            raise ValueError(f"Invalid address length: {len(address)}")
+            raise ValueError(f"Invalid address length: {len(address)} - Address: {address}")
         
         # Validate hex
         try:
-            int(address, 16)
+            int(address[2:], 16)  # Skip 0x prefix for validation
         except ValueError:
             raise ValueError(f"Invalid hex address: {address}")
         
